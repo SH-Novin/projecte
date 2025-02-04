@@ -690,7 +690,8 @@ int remind(){
             }
         }
     }
-}
+} 
+
 
 int sign_up(){
     clear();
