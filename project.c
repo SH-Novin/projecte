@@ -3,8 +3,37 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include<locale.h>
 
+int floor = 0;
+char select_gun = 'm';
+int number_dagger = 0, number_arrow = 0, number_wand = 0;
+char number_sword[12] = "0";
+char map[4][24][80];
 char UserName[25], EMail[30], Password[25], RemWord[25];
+int character_row, character_column;
+int pillar_row, pillar_column;
+int flag_corridor_map[4][24][80], map_door[floor][4][24][80];
+struct room{
+    int row;
+    int column;
+    int lenght;
+    int width;
+    int door_row;
+    int door_column;
+    int door_left_row;
+    int door_left_column;
+    int door_right_row;
+    int door_right_column;
+};
+//Define
+
+//Struct
+
+//Functions
+void Hello();
+
+
 int menu_start(){
 
     keypad(stdscr, TRUE);
@@ -1169,7 +1198,7 @@ int pre_game(){
 
 }
 
-settings(){
+int settings(){
     keypad(stdscr, TRUE);
     raw();
     curs_set(0);
@@ -1687,6 +1716,216 @@ settings(){
         wrefresh(menu);
     }
 }
+
+int profile() {
+    keypad(stdscr, TRUE);
+    raw();
+    curs_set(0);
+
+    int select = 0;
+    char *start_items[5] = {"USERNAME", "SCORE", "GOLD", "N OF GAMES", "EXPERIENCE"};
+    WINDOW *menu = newwin(11, 20, 6, 30);
+    keypad(menu, TRUE);
+    wclear(menu);
+    box(menu, 0,  0);
+    
+
+    for (int i = 0; i < 5; i++)
+    {
+        if (i == 0){
+            wattron(menu, COLOR_PAIR(4));
+            wattron(menu, A_BOLD);
+            mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+            wattroff(menu, A_BOLD);
+            wattroff(menu, COLOR_PAIR(4));
+        }
+        
+        else if (i == 1)
+            mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+        else if (i == 2)
+            mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+        else if (i == 3)
+            mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+        else if (i == 4)
+            mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+        move(1, 1);          
+        clrtoeol();            
+        mvprintw(1, 1, "YOU'RE SELECTED: %s", start_items[select]);
+        refresh();
+    }
+
+    wrefresh(menu);
+    while (1)
+    {
+        wrefresh(menu);
+        int c = wgetch(menu);
+        if (c == KEY_UP)
+        {
+            wrefresh(menu);
+            if (select == 0){
+                select = 4;
+                move(1, 1);          
+                clrtoeol();            
+                mvprintw(1, 1, "YOU'RE SELECTED: %s", start_items[select]);
+                refresh();
+            }
+
+            else{
+                --select;
+                move(1, 1);          
+                clrtoeol();            
+                mvprintw(1, 1, "YOU'RE SELECTED: %s", start_items[select]);
+                refresh();
+            }
+
+            wclear(menu);
+            box(menu, 0,  0);
+            for (int i = 0; i < 5; i++){
+                if (i == select){
+                    if (i == 0){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+
+                    else if (i == 1){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+
+                    else if (i == 2){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+
+                    else if (i == 3){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+
+                    else if (i == 4){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+                }
+                else{
+                    if (i == 0)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+
+                    if (i == 1)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+
+                    if (i == 2)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+
+                    if (i == 3)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        
+                    if (i == 4)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                }
+            }
+        }
+
+        else if (c == KEY_DOWN){
+            if (select == 4){
+                select = 0;
+                move(1, 1);          
+                clrtoeol();            
+                mvprintw(1, 1, "YOU'RE SELECTED: %s", start_items[select]);
+                refresh();
+            }
+            else{
+                ++select;
+                move(1, 1);          
+                clrtoeol();            
+                mvprintw(1, 1, "YOU'RE SELECTED: %s", start_items[select]);
+                refresh();
+            }
+
+            wclear(menu);
+            box(menu, 0,  0);
+            for (int i = 0; i < 5; i++){
+                if (i == select){
+                    if (i == 0){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+
+                    else if (i == 1){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+
+                    else if (i == 2){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+
+                    else if (i == 3){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+
+                    else if (i == 4){
+                        wattron(menu, COLOR_PAIR(4));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(4));
+                    }
+                }
+
+                else{
+                    if (i == 0)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                    if (i == 1)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                    if (i == 2)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                    if (i == 3)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                    if (i == 4)
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", start_items[i]);
+                }
+            }
+        }
+
+        else if (c == '\n'){
+            wrefresh(menu);
+            delwin(menu);
+            return select;
+        }
+        wrefresh(menu);
+    }
+
+}
 // int x(){
 //     int select = pre_game();
 //         if(select == 0)
@@ -1700,6 +1939,1243 @@ settings(){
 //         if(select == 4)
 //             settings();
 // }
+
+void map_create(){
+    curs_set(0);
+
+    for(int j = 0; j < 24; j++){
+        for(int i = 0; i < 80; i++){
+            map[floor][j][i] = ' ';
+        }
+    }
+    
+    srand(time(NULL));
+    int count_door = 0;
+    struct room a[8];
+    int door;
+
+    for(int i = 0; i < 8; i++){
+        if(i == 0){
+            a[i].width = ((rand() % 4) + 6);
+            a[i].lenght = ((rand() % 6 )+ 6);
+            a[i].row = rand() % (10 - a[i].width);
+            a[i].column = rand() % (16 - a[i].lenght);
+            
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column] = '|';
+            }
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column + a[i].lenght - 1] = '|';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row][j] = '*';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row + a[i].width - 1][j] = '*';
+            } 
+
+            door = rand() % (a[i].lenght - 2) + a[i].column + 1;
+            map[floor][a[i].row + a[i].width - 1][door] = '+';
+            a[i].door_row = a[i].row + a[i].width - 1;
+            a[i].door_column = door;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column + a[i].lenght - 1] = '+';
+            a[i].door_right_row = door;
+            a[i].door_right_column = a[i].column + a[i].lenght - 1;
+
+            for(int k = a[i].row + 1; k < a[i].row + a[i].width - 1; k++){
+                for(int j = a[i].column + 1; j < a[i].column + a[i].lenght - 1; j++){
+                    map[floor][k][j] = '.';
+                }
+            }
+
+            if((rand() % 2) == 1){
+                pillar_row = rand() % (a[i].width - 2) + a[i].row + 1;
+                pillar_column = rand() % (a[i].lenght - 2) + a[i].column + 1;
+                map[floor][pillar_row][pillar_column] = 'O';
+            }
+        }
+        else if(i == 1){
+            a[i].width = (rand() % 4 + 6);
+            a[i].lenght = (rand() % 6 + 6);
+            a[i].row = rand() % (10 - a[i].width);
+            a[i].column = (rand() % (18 - a[i].lenght) + 20);
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column] = '|';
+            }
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column + a[i].lenght - 1] = '|';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row][j] = '*';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row + a[i].width - 1][j] = '*';
+            } 
+
+            door = rand() % (a[i].lenght - 2) + a[i].column + 1;
+            map[floor][a[i].row + a[i].width - 1][door] = '+';
+            a[i].door_row = a[i].row + a[i].width - 1;
+            a[i].door_column = door;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column + a[i].lenght - 1] = '+';
+            a[i].door_right_row = door;
+            a[i].door_right_column = a[i].column + a[i].lenght - 1;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column] = '+';
+            a[i].door_left_row = door;
+            a[i].door_left_column = a[i].column;
+
+            for(int k = a[i].row + 1; k < a[i].row + a[i].width - 1; k++){
+                for(int j = a[i].column + 1; j < a[i].column + a[i].lenght - 1; j++){
+                    map[floor][k][j] = '.';
+                }
+            }
+
+            if((rand() % 2) == 1){
+                pillar_row = rand() % (a[i].width - 2) + a[i].row + 1;
+                pillar_column = rand() % (a[i].lenght - 2) + a[i].column + 1;
+                map[floor][pillar_row][pillar_column] = 'O';
+            }
+        }
+        else if(i == 2){
+            a[i].width = (rand() % 4 + 6);
+            a[i].lenght = (rand() % 6 + 6);
+            a[i].row = rand() % (10 - a[i].width);
+            a[i].column = (rand() % (18 - a[i].lenght) + 40);
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column] = '|';
+            }
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column + a[i].lenght - 1] = '|';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row][j] = '*';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row + a[i].width - 1][j] = '*';
+            } 
+
+            door = rand() % (a[i].lenght - 2) + a[i].column + 1;
+            map[floor][a[i].row + a[i].width - 1][door] = '+';
+            a[i].door_row = a[i].row + a[i].width - 1;
+            a[i].door_column = door;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column + a[i].lenght - 1] = '+';
+            a[i].door_right_row = door;
+            a[i].door_right_column = a[i].column + a[i].lenght - 1;
+            
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column] = '+';
+            a[i].door_left_row = door;
+            a[i].door_left_column = a[i].column;
+
+            for(int k = a[i].row + 1; k < a[i].row + a[i].width - 1; k++){
+                for(int j = a[i].column + 1; j < a[i].column + a[i].lenght - 1; j++){
+                    map[floor][k][j] = '.';
+                }
+            }
+
+            if((rand() % 2) == 1){
+                pillar_row = rand() % (a[i].width - 2) + a[i].row + 1;
+                pillar_column = rand() % (a[i].lenght - 2) + a[i].column + 1;
+                map[floor][pillar_row][pillar_column] = 'O';
+            }
+        }
+        else if(i == 3){
+            a[i].width = (rand() % 4 + 6);
+            a[i].lenght = (rand() % 6 + 6);
+            a[i].row = rand() % (10 - a[i].width);
+            a[i].column = (rand() % (18 - a[i].lenght) + 60);
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column] = '|';
+            }
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column + a[i].lenght - 1] = '|';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row][j] = '*';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row + a[i].width - 1][j] = '*';
+            } 
+
+            door = rand() % (a[i].lenght - 2) + a[i].column + 1;
+            map[floor][a[i].row + a[i].width - 1][door] = '+';
+            a[i].door_row = a[i].row + a[i].width - 1;
+            a[i].door_column = door;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column] = '+';
+            a[i].door_left_row = door;
+            a[i].door_left_column = a[i].column;
+
+            for(int k = a[i].row + 1; k < a[i].row + a[i].width - 1; k++){
+                for(int j = a[i].column + 1; j < a[i].column + a[i].lenght - 1; j++){
+                    map[floor][k][j] = '.';
+                }
+            }
+
+            if((rand() % 2) == 1){
+                pillar_row = rand() % (a[i].width - 2) + a[i].row + 1;
+                pillar_column = rand() % (a[i].lenght - 2) + a[i].column + 1;
+                map[floor][pillar_row][pillar_column] = 'O';
+            }
+        }
+        else if(i == 4){
+            a[i].width = (rand() % 4 + 6);
+            a[i].lenght = (rand() % 6 + 6);
+            a[i].row = (rand() % (10 - a[i].width) + 12);
+            a[i].column = rand() % (18 - a[i].lenght);
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column] = '|';
+            }
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column + a[i].lenght - 1] = '|';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row][j] = '*';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row + a[i].width - 1][j] = '*';
+            } 
+
+            door = rand() % (a[i].lenght - 2) + a[i].column + 1;
+            map[floor][a[i].row][door] = '+';
+            a[i].door_row = a[i].row;
+            a[i].door_column = door;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column + a[i].lenght - 1] = '+';
+            a[i].door_right_row = door;
+            a[i].door_right_column = a[i].column + a[i].lenght - 1;
+
+            for(int k = a[i].row + 1; k < a[i].row + a[i].width - 1; k++){
+                for(int j = a[i].column + 1; j < a[i].column + a[i].lenght - 1; j++){
+                    map[floor][k][j] = '.';
+                }
+            }
+
+            if((rand() % 2) == 1){
+                pillar_row = rand() % (a[i].width - 2) + a[i].row + 1;
+                pillar_column = rand() % (a[i].lenght - 2) + a[i].column + 1;
+                map[floor][pillar_row][pillar_column] = 'O';
+            }
+        }
+        else if(i == 5){
+            a[i].width = (rand() % 4 + 6);
+            a[i].lenght = (rand() % 6 + 6);
+            a[i].row = (rand() % (10 - a[i].width) + 12);
+            a[i].column = (rand() % (18 - a[i].lenght) + 20);
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column] = '|';
+            }
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column + a[i].lenght - 1] = '|';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row][j] = '*';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row + a[i].width - 1][j] = '*';
+            } 
+
+            door = rand() % (a[i].lenght - 2) + a[i].column + 1;
+            map[floor][a[i].row][door] = '+';
+            a[i].door_row = a[i].row;
+            a[i].door_column = door;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column + a[i].lenght - 1] = '+';
+            a[i].door_right_row = door;
+            a[i].door_right_column = a[i].column + a[i].lenght - 1;
+            
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column] = '+';
+            a[i].door_left_row = door;
+            a[i].door_left_column = a[i].column;
+
+            for(int k = a[i].row + 1; k < a[i].row + a[i].width - 1; k++){
+                for(int j = a[i].column + 1; j < a[i].column + a[i].lenght - 1; j++){
+                    map[floor][k][j] = '.';
+                }
+            }
+
+            if((rand() % 2) == 1){
+                pillar_row = rand() % (a[i].width - 2) + a[i].row + 1;
+                pillar_column = rand() % (a[i].lenght - 2) + a[i].column + 1;
+                map[floor][pillar_row][pillar_column] = 'O';
+            }
+        }
+        else if(i == 6){
+            a[i].width = (rand() % 4 + 6);
+            a[i].lenght = (rand() % 6 + 6);
+            a[i].row = (rand() % (10 - a[i].width) + 12);
+            a[i].column = (rand() % (18 - a[i].lenght) + 40);
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column] = '|';
+            }
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column + a[i].lenght - 1] = '|';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row][j] = '*';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row + a[i].width - 1][j] = '*';
+            } 
+
+            door = rand() % (a[i].lenght - 2) + a[i].column + 1;
+            map[floor][a[i].row][door] = '+';
+            a[i].door_row = a[i].row;
+            a[i].door_column = door;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column + a[i].lenght - 1] = '+';
+            a[i].door_right_row = door;
+            a[i].door_right_column = a[i].column + a[i].lenght - 1;
+            
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column] = '+';
+            a[i].door_left_row = door;
+            a[i].door_left_column = a[i].column;
+
+            for(int k = a[i].row + 1; k < a[i].row + a[i].width - 1; k++){
+                for(int j = a[i].column + 1; j < a[i].column + a[i].lenght - 1; j++){
+                    map[floor][k][j] = '.';
+                }
+            }
+
+            if((rand() % 2) == 1){
+                pillar_row = rand() % (a[i].width - 2) + a[i].row + 1;
+                pillar_column = rand() % (a[i].lenght - 2) + a[i].column + 1;
+                map[floor][pillar_row][pillar_column] = 'O';
+            }
+        }
+        else if(i == 7){
+            a[i].width = (rand() % 4 + 6);
+            a[i].lenght = (rand() % 6 + 6);
+            a[i].row = (rand() % (10 - a[i].width) + 12);
+            a[i].column = (rand() % (18 - a[i].lenght) + 60);
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column] = '|';
+            }
+
+            for(int j = a[i].row; j < a[i].row + a[i].width; j++){
+                map[floor][j][a[i].column + a[i].lenght - 1] = '|';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row][j] = '*';
+            }
+
+            for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
+                map[floor][a[i].row + a[i].width - 1][j] = '*';
+            } 
+
+            door = rand() % (a[i].lenght - 2) + a[i].column + 1;
+            map[floor][a[i].row][door] = '+';
+            a[i].door_row = a[i].row;
+            a[i].door_column = door;
+
+            door = rand() % (a[i].width - 2) + a[i].row + 1;
+            map[floor][door][a[i].column] = '+';
+            a[i].door_left_row = door;
+            a[i].door_left_column = a[i].column;
+
+            for(int k = a[i].row + 1; k < a[i].row + a[i].width - 1; k++){
+                for(int j = a[i].column + 1; j < a[i].column + a[i].lenght - 1; j++){
+                    map[floor][k][j] = '.';
+                }
+            }
+
+            if((rand() % 2) == 1){
+                pillar_row = rand() % (a[i].width - 2) + a[i].row + 1;
+                pillar_column = rand() % (a[i].lenght - 2) + a[i].column + 1;
+                map[floor][pillar_row][pillar_column] = 'O';
+            }
+        }
+    }
+
+
+
+
+    for(int j = 0; j < 1; j++){
+        if(a[0].door_column == a[4].door_column){
+            for(int i = a[0].door_row + 1; i < a[4].door_row; i++)
+                map[floor][i][a[0].door_column] = '#';
+        }
+        else if(a[0].door_column > a[4].door_column){
+            for(int i = a[0].door_row + 1; i <= ((a[4].door_row + a[0].door_row) / 2); i++)
+                map[floor][i][a[0].door_column] = '#';
+            for(int i = a[4].door_column; i < a[0].door_column; i++)
+                map[floor][((a[4].door_row + a[0].door_row) / 2)][i] = '#';
+            for(int i = ((a[4].door_row + a[0].door_row) / 2); i < a[4].door_row; i++)
+                map[floor][i][a[4].door_column] = '#';
+        }
+        else{
+            for(int i = a[0].door_row + 1; i <= ((a[4].door_row + a[0].door_row) / 2); i++)
+                map[floor][i][a[0].door_column] = '#';
+            for(int i = a[0].door_column; i < a[4].door_column; i++)
+                map[floor][((a[0].door_row + a[4].door_row) / 2)][i] = '#';
+            for(int i = ((a[4].door_row + a[0].door_row) / 2); i < a[4].door_row; i++)
+                map[floor][i][a[4].door_column] = '#';
+        }
+    }
+
+    for(int j = 0; j < 1; j++){
+        if(a[1].door_column == a[5].door_column){
+            for(int i = a[1].door_row + 1; i < a[5].door_row; i++)
+                map[floor][i][a[1].door_column] = '#';
+        }
+        else if(a[1].door_column > a[5].door_column){
+            for(int i = a[1].door_row + 1; i <= ((a[5].door_row + a[1].door_row) / 2); i++)
+                map[floor][i][a[1].door_column] = '#';
+            for(int i = a[5].door_column; i < a[1].door_column; i++)
+                map[floor][((a[5].door_row + a[1].door_row) / 2)][i] = '#';
+            for(int i = ((a[5].door_row + a[1].door_row) / 2); i < a[5].door_row; i++)
+                map[floor][i][a[5].door_column] = '#';
+        }
+        else{
+            for(int i = a[1].door_row + 1; i <= ((a[5].door_row + a[1].door_row) / 2); i++)
+                map[floor][i][a[1].door_column] = '#';
+            for(int i = a[1].door_column; i < a[5].door_column; i++)
+                map[floor][((a[1].door_row + a[5].door_row) / 2)][i] = '#';
+            for(int i = ((a[5].door_row + a[1].door_row) / 2); i < a[5].door_row; i++)
+                map[floor][i][a[5].door_column] = '#';
+        }
+    }
+
+    for(int j = 0; j < 1; j++){
+        if(a[2].door_column == a[6].door_column){
+            for(int i = a[2].door_row + 1; i < a[6].door_row; i++)
+                map[floor][i][a[2].door_column] = '#';
+        }
+        else if(a[2].door_column > a[6].door_column){
+            for(int i = a[2].door_row + 1; i <= ((a[6].door_row + a[2].door_row) / 2); i++)
+                map[floor][i][a[2].door_column] = '#';
+            for(int i = a[6].door_column; i < a[2].door_column; i++)
+                map[floor][((a[6].door_row + a[2].door_row) / 2)][i] = '#';
+            for(int i = ((a[6].door_row + a[2].door_row) / 2); i < a[6].door_row; i++)
+                map[floor][i][a[6].door_column] = '#';
+        }
+        else{
+            for(int i = a[2].door_row + 1; i <= ((a[6].door_row + a[2].door_row) / 2); i++)
+                map[floor][i][a[2].door_column] = '#';
+            for(int i = a[2].door_column; i < a[6].door_column; i++)
+                map[floor][((a[2].door_row + a[6].door_row) / 2)][i] = '#';
+            for(int i = ((a[6].door_row + a[2].door_row) / 2); i < a[6].door_row; i++)
+                map[floor][i][a[6].door_column] = '#';
+        }
+    }
+
+    for(int j = 0; j < 1; j++){
+        if(a[3].door_column == a[7].door_column){
+            for(int i = a[3].door_row + 1; i < a[7].door_row; i++)
+                map[floor][i][a[3].door_column] = '#';
+        }
+        else if(a[3].door_column > a[7].door_column){
+            for(int i = a[3].door_row + 1; i <= ((a[7].door_row + a[3].door_row) / 2); i++)
+                map[floor][i][a[3].door_column] = '#';
+            for(int i = a[7].door_column; i < a[3].door_column; i++)
+                map[floor][((a[7].door_row + a[3].door_row) / 2)][i] = '#';
+            for(int i = ((a[7].door_row + a[3].door_row) / 2); i < a[7].door_row; i++)
+                map[floor][i][a[7].door_column] = '#';
+        }
+        else{
+            for(int i = a[3].door_row + 1; i <= ((a[7].door_row + a[3].door_row) / 2); i++)
+                map[floor][i][a[3].door_column] = '#';
+            for(int i = a[3].door_column; i < a[7].door_column; i++)
+                map[floor][((a[3].door_row + a[7].door_row) / 2)][i] = '#';
+            for(int i = ((a[7].door_row + a[3].door_row) / 2); i < a[7].door_row; i++)
+                map[floor][i][a[7].door_column] = '#';
+        }
+    }
+
+
+
+
+    
+    for(int j = 0; j < 1; j++){
+        if(a[0].door_right_row == a[1].door_left_row){
+            for(int i = a[0].door_right_column + 1; i < a[1].door_left_column; i++){
+                map[floor][a[0].door_right_row][i] = '#';
+            }
+        }
+        else if(a[0].door_right_row < a[1].door_left_row){
+            for(int i = a[0].door_right_column + 1; i <= ((a[0].door_right_column + a[1].door_left_column) / 2); i++)
+                map[floor][a[0].door_right_row][i] = '#';
+            for(int i = a[0].door_right_row; i <= a[1].door_left_row; i++)
+                map[floor][i][((a[0].door_right_column + a[1].door_left_column) / 2)] = '#';
+            for(int i = ((a[0].door_right_column + a[1].door_left_column) / 2); i < a[1].door_left_column; i++)
+                map[floor][a[1].door_left_row][i] = '#';
+        }
+        else if(a[0].door_right_row > a[1].door_left_row){
+            for(int i = a[0].door_right_column + 1; i <= ((a[0].door_right_column + a[1].door_left_column) / 2); i++)
+                map[floor][a[0].door_right_row][i] = '#';
+            for(int i = a[1].door_left_row; i <= a[0].door_right_row; i++)
+                map[floor][i][((a[0].door_right_column + a[1].door_left_column) / 2)] = '#';
+            for(int i = ((a[0].door_right_column + a[1].door_left_column) / 2); i < a[1].door_left_column; i++)
+                map[floor][a[1].door_left_row][i] = '#';
+        }
+    }
+
+    for(int j = 0; j < 1; j++){
+        if(a[1].door_right_row == a[2].door_left_row){
+            for(int i = a[1].door_right_column + 1; i < a[2].door_left_column; i++){
+                map[floor][a[1].door_right_row][i] = '#';
+            }
+        }
+        else if(a[1].door_right_row < a[2].door_left_row){
+            for(int i = a[1].door_right_column + 1; i <= ((a[1].door_right_column + a[2].door_left_column) / 2); i++)
+                map[floor][a[1].door_right_row][i] = '#';
+            for(int i = a[1].door_right_row; i <= a[2].door_left_row; i++)
+                map[floor][i][((a[1].door_right_column + a[2].door_left_column) / 2)] = '#';
+            for(int i = ((a[1].door_right_column + a[2].door_left_column) / 2); i < a[2].door_left_column; i++)
+                map[floor][a[2].door_left_row][i] = '#';
+        }
+        else{
+            for(int i = a[1].door_right_column + 1; i <= ((a[1].door_right_column + a[2].door_left_column) / 2); i++)
+                map[floor][a[1].door_right_row][i] = '#';
+            for(int i = a[2].door_left_row; i <= a[1].door_right_row; i++)
+                map[floor][i][((a[1].door_right_column + a[2].door_left_column) / 2)] = '#';
+            for(int i = ((a[1].door_right_column + a[2].door_left_column) / 2); i < a[2].door_left_column; i++)
+                map[floor][a[2].door_left_row][i] = '#';
+        }
+    }
+
+    for(int j = 0; j < 1; j++){
+        if(a[2].door_right_row == a[3].door_left_row){
+            for(int i = a[2].door_right_column + 1; i < a[3].door_left_column; i++){
+                map[floor][a[2].door_right_row][i] = '#';
+            }
+        }
+        else if(a[2].door_right_row < a[3].door_left_row){
+            for(int i = a[2].door_right_column + 1; i <= ((a[2].door_right_column + a[3].door_left_column) / 2); i++)
+                map[floor][a[2].door_right_row][i] = '#';
+            for(int i = a[2].door_right_row; i <= a[3].door_left_row; i++)
+                map[floor][i][((a[2].door_right_column + a[3].door_left_column) / 2)] = '#';
+            for(int i = ((a[2].door_right_column + a[3].door_left_column) / 2); i < a[3].door_left_column; i++)
+                map[floor][a[3].door_left_row][i] = '#';
+        }
+        else{
+            for(int i = a[2].door_right_column + 1; i <= ((a[2].door_right_column + a[3].door_left_column) / 2); i++)
+                map[floor][a[2].door_right_row][i] = '#';
+            for(int i = a[3].door_left_row; i <= a[2].door_right_row; i++)
+                map[floor][i][((a[2].door_right_column + a[3].door_left_column) / 2)] = '#';
+            for(int i = ((a[2].door_right_column + a[3].door_left_column) / 2); i < a[3].door_left_column; i++)
+                map[floor][a[3].door_left_row][i] = '#';
+        }
+    }
+
+    for(int j = 0; j < 1; j++){
+        if(a[4].door_right_row == a[5].door_left_row){
+            for(int i = a[4].door_right_column + 1; i < a[5].door_left_column; i++){
+                map[floor][a[4].door_right_row][i] = '#';
+            }
+        }
+        else if(a[4].door_right_row < a[5].door_left_row){
+            for(int i = a[4].door_right_column + 1; i <= ((a[4].door_right_column + a[5].door_left_column) / 2); i++)
+                map[floor][a[4].door_right_row][i] = '#';
+            for(int i = a[4].door_right_row; i <= a[5].door_left_row; i++)
+                map[floor][i][((a[4].door_right_column + a[5].door_left_column) / 2)] = '#';
+            for(int i = ((a[4].door_right_column + a[5].door_left_column) / 2); i < a[5].door_left_column; i++)
+                map[floor][a[5].door_left_row][i] = '#';
+        }
+        else{
+            for(int i = a[4].door_right_column + 1; i <= ((a[4].door_right_column + a[5].door_left_column) / 2); i++)
+                map[floor][a[4].door_right_row][i] = '#';
+            for(int i = a[5].door_left_row; i <= a[4].door_right_row; i++)
+                map[floor][i][((a[4].door_right_column + a[5].door_left_column) / 2)] = '#';
+            for(int i = ((a[4].door_right_column + a[5].door_left_column) / 2); i < a[5].door_left_column; i++)
+                map[floor][a[5].door_left_row][i] = '#';
+        }
+    }
+
+    for(int j = 0; j < 1; j++){
+        if(a[5].door_right_row == a[6].door_left_row){
+            for(int i = a[5].door_right_column + 1; i < a[6].door_left_column; i++){
+                map[floor][a[5].door_right_row][i] = '#';
+            }
+        }
+        else if(a[5].door_right_row < a[6].door_left_row){
+            for(int i = a[5].door_right_column + 1; i <= ((a[5].door_right_column + a[6].door_left_column) / 2); i++)
+                map[floor][a[5].door_right_row][i] = '#';
+            for(int i = a[5].door_right_row; i <= a[6].door_left_row; i++)
+                map[floor][i][((a[5].door_right_column + a[6].door_left_column) / 2)] = '#';
+            for(int i = ((a[5].door_right_column + a[6].door_left_column) / 2); i < a[6].door_left_column; i++)
+                map[floor][a[6].door_left_row][i] = '#';
+        }
+        else{
+            for(int i = a[5].door_right_column + 1; i <= ((a[5].door_right_column + a[6].door_left_column) / 2); i++)
+                map[floor][a[5].door_right_row][i] = '#';
+            for(int i = a[6].door_left_row; i <= a[5].door_right_row; i++)
+                map[floor][i][((a[5].door_right_column + a[6].door_left_column) / 2)] = '#';
+            for(int i = ((a[5].door_right_column + a[6].door_left_column) / 2); i < a[6].door_left_column; i++)
+                map[floor][a[6].door_left_row][i] = '#';
+        }
+    }
+
+    for(int j = 0; j < 1; j++){
+        if(a[6].door_right_row == a[7].door_left_row){
+            for(int i = a[6].door_right_column + 1; i < a[7].door_left_column; i++){
+                map[floor][a[6].door_right_row][i] = '#';
+            }
+        }
+        else if(a[6].door_right_row < a[7].door_left_row){
+            for(int i = a[6].door_right_column + 1; i <= ((a[6].door_right_column + a[7].door_left_column) / 2); i++)
+                map[floor][a[6].door_right_row][i] = '#';
+            for(int i = a[6].door_right_row; i <= a[7].door_left_row; i++)
+                map[floor][i][((a[6].door_right_column + a[7].door_left_column) / 2)] = '#';
+            for(int i = ((a[6].door_right_column + a[7].door_left_column) / 2); i < a[7].door_left_column; i++)
+                map[floor][a[7].door_left_row][i] = '#';
+        }
+        else{
+            for(int i = a[6].door_right_column + 1; i <= ((a[6].door_right_column + a[7].door_left_column) / 2); i++)
+                map[floor][a[6].door_right_row][i] = '#';
+            for(int i = a[7].door_left_row; i <= a[6].door_right_row; i++)
+                map[floor][i][((a[6].door_right_column + a[7].door_left_column) / 2)] = '#';
+            for(int i = ((a[6].door_right_column + a[7].door_left_column) / 2); i < a[7].door_left_column; i++)
+                map[floor][a[7].door_left_row][i] = '#';
+        }
+    }
+
+    map[floor][a[0].row + 2][a[0].column + 2] = '$';
+    character_row = a[0].row + 2, character_column = a[0].column + 2;
+
+    refresh();
+}
+
+move_map(){
+    initscr();
+    noecho();
+    curs_set(0);
+    map_create();
+
+    while(1){
+        nodelay(stdscr, TRUE); 
+        timeout(0);
+        int c = getch();
+
+        if(c == 'M'){
+            
+        }
+
+        else if(c == 'i'){
+            char *weapon_items[6] = {"GUN", "Mace", "Dagger", "Magic Wand", "Normal Arrow", "Sword"};
+        
+            WINDOW *menu = newwin(13, 30, 5, 25);
+            keypad(menu, TRUE);
+            wclear(menu);
+            box(menu, 0,  0);
+            while(1){
+                wclear(menu);
+                for(int i = 0; i < 6; i++){
+                    if (i == 0){
+                        wattron(menu, COLOR_PAIR(1));
+                        wattron(menu, A_BOLD);
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", weapon_items[i]);
+                        mvwprintw(menu, 2 * i + 1, 7, "NUMBER");
+                        mvwprintw(menu, 2 * i + 1, 15, "DAMAGE");
+                        mvprintw(menu, 2 * i + 1, 23, "SELECTED");
+                        wattroff(menu, A_BOLD);
+                        wattroff(menu, COLOR_PAIR(1));
+                        wrefresh(menu);
+                    }
+                    else if (i == 1){
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", weapon_items[i]);
+                        mvwprintw(menu, 2 * i + 1, 9, "extreme");
+                        mvwprintw(menu, 2 * i + 1, 18, "5");
+                        if(select_gun == 'm'){
+                            wattron(menu, COLOR_PAIR(2));
+                            mvwprintw(menu, 2 * i + 1, 23, "Picked");
+                            wattroff(menu, COLOR_PAIR(2));
+                        }
+                        wrefresh(menu);
+                    }
+                    else if (i == 2){
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", weapon_items[i]);
+                        mvwprintw(menu, 2 * i + 1, 10, "%s", number_dagger);
+                        mvwprintw(menu, 2 * i + 1, 17, "12");
+                        if(select_gun == 'd'){
+                            wattron(menu, COLOR_PAIR(2));
+                            mvwprintw(menu, 2 * i + 1, 23, "Picked");
+                            wattroff(menu, COLOR_PAIR(2));
+                        }
+                        wrefresh(menu);
+                    }
+                    else if (i == 3){
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", weapon_items[i]);
+                        mvwprintw(menu, 2 * i + 1, 13, "%d", number_wand);
+                        mvwprintw(menu, 2 * i + 1, 18, "15");
+                        if(select_gun == 'w'){
+                            wattron(menu, COLOR_PAIR(2));
+                            mvwprintw(menu, 2 * i + 1, 24, "Picked");
+                            wattroff(menu, COLOR_PAIR(2));
+                        }
+                        wrefresh(menu);
+                    }
+                    else if (i == 4){
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", weapon_items[i]);
+                        mvwprintw(menu, 2 * i + 1, 14, "%d", number_arrow);
+                        mvwprintw(menu, 2 * i + 1, 19, "5");
+                        if(select_gun == 'a'){
+                            wattron(menu, COLOR_PAIR(2));
+                            mvwprintw(menu, 2 * i + 1, 24, "Picked");
+                            wattroff(menu, COLOR_PAIR(2));
+                        }
+                        wrefresh(menu);
+                    }
+                    else if (i == 5){
+                        mvwprintw(menu, 2 * i + 1, 2, "%s", weapon_items[i]);
+                        mvwprintw(menu, 2 * i + 1, 10, "%s", number_sword);
+                        mvwprintw(menu, 2 * i + 1, 19, "12");
+                        if(select_gun == 's'){
+                            wattron(menu, COLOR_PAIR(2));
+                            mvwprintw(menu, 2 * i + 1, 23, "Picked");
+                            wattroff(menu, COLOR_PAIR(2));
+                        }
+                        wrefresh(menu);
+                    }
+                }
+
+                wrefresh(menu);
+                int z = getch();
+                
+                if(z == 'm'){
+                    WINDOW *message = newwin(2, 40, 1, 1);
+                    if(select_gun == 'm'){
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "THE GUN HAS ALREADY BEEN SELECTED !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        continue;
+                    }
+                    else if(select_gun != 'x'){
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "PUT YOUR GUN IN BACKPACK !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        continue;
+                    }
+                    else{
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "THE GUN WAS SUCCESSFULLY SELECTED !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        select_gun = 'd';
+                        continue;
+                    }
+                    delwin(message);
+                }
+
+                if(z == 'd'){
+                    WINDOW *message = newwin(2, 40, 1, 1);
+                    if(select_gun == 'd'){
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "THE GUN HAS ALREADY BEEN SELECTED !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        continue;
+                    }
+                    else if(select_gun != 'x'){
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "PUT YOUR GUN IN BACKPACK !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        continue;
+                    }
+                    else if(number_dagger == 0){
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "THERE IS NO GUN !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        continue;
+                    }
+                    else{
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "THE GUN WAS SUCCESSFULLY SELECTED !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        select_gun = 'd';
+                        continue;
+                    }
+                    delwin(message);
+                }
+
+                if(z == 'w'){
+                    WINDOW *message = newwin(2, 40, 1, 1);
+                    if(select_gun == 'w'){
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "THE GUN HAS ALREADY BEEN SELECTED !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        continue;
+                    }
+                    else if(select_gun != 'x'){
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "PUT YOUR GUN IN BACKPACK !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        continue;
+                    }
+                    else if(number_wand == 0){
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "THERE IS NO GUN !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        continue;
+                    }
+                    else{
+                        wattron(message, COLOR_PAIR(6));
+                        mvwprintw(message, 1, 1, "THE GUN WAS SUCCESSFULLY SELECTED !");
+                        wrefresh(message);
+                        napms(800);
+                        wattroff(message, COLOR_PAIR(6));
+                        wrefresh(message);
+                        select_gun = 'd';
+                        continue;
+                    }
+                    delwin(message);
+                }
+                
+                if()
+                
+            }
+        }
+        else if(c == 'h'){
+             
+            if(map[floor][character_row][character_column - 1] == '|' || map[floor][character_row][character_column - 1] == 'D' || map[floor][character_row][character_column - 1] == 'F' || map[floor][character_row][character_column - 1] == 'G' || map[floor][character_row][character_column - 1] == 'S' || map[floor][character_row][character_column - 1] == 'U' || map[floor][character_row][character_column - 1] == 'O' || map[floor][character_row + 1][character_column] == ' '){
+                attron(COLOR_PAIR(5));
+                move(1, 1);
+                clrtoeol();
+                printw("INVALID ORDER !");
+                refresh();
+                napms(850);
+                attroff(COLOR_PAIR(5));
+                refresh();
+                continue;
+            }
+            else{
+                 
+                map[floor][character_row][character_column] = '.';
+                map[floor][character_row][character_column - 1] = '$';
+
+                if(map[floor][character_row][character_column - 1] == '+')
+                    map_door[floor][character_row][character_column - 1] = 1;
+                if(map[floor][character_row][character_column - 1] == '#')
+                    map_door[floor][character_row][character_column - 1] = 2;
+
+                if(map_door[floor][character_row][character_column] == 1)
+                    map[floor][character_row][character_column] = '+';
+                if(map_door[floor][character_row][character_column] == 2)
+                    map[floor][character_row][character_column] = '#';
+
+                character_column = character_column - 1;
+                if(map[floor][character_row - 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row - 1][character_column] = 1;
+                }
+                if(map[floor][character_row + 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row + 1][character_column] = 1;
+                }
+                if(map[floor][character_row][character_column -1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column - 1] = 1;
+                }
+                if(map[floor][character_row][character_column + 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column + 1] = 1;
+                }
+            }
+            refresh();
+        }
+
+        else if(c == 'l'){
+             
+            if(map[floor][character_row][character_column + 1] == '|' || map[floor][character_row][character_column + 1] == 'D' || map[floor][character_row][character_column + 1] == 'F' || map[floor][character_row][character_column + 1] == 'G' || map[floor][character_row][character_column + 1] == 'S' || map[floor][character_row][character_column + 1] == 'U' || map[floor][character_row][character_column + 1] == 'O' || map[floor][character_row + 1][character_column] == ' '){
+                attron(COLOR_PAIR(5));
+                move(1, 1);
+                clrtoeol();
+                printw("INVALID ORDER !");
+                refresh();
+                napms(850);
+                attroff(COLOR_PAIR(5));
+                refresh();
+                continue;
+            }
+            else{
+                 
+                map[floor][character_row][character_column] = '.';
+                map[floor][character_row][character_column + 1] = '$';
+
+                if(map[floor][character_row][character_column + 1] == '+')
+                    map_door[floor][character_row][character_column + 1] = 1;
+                if(map[floor][character_row][character_column + 1] == '#')
+                    map_door[floor][character_row][character_column + 1] = 2;
+
+                if(map_door[floor][character_row][character_column] == 1)
+                    map[floor][character_row][character_column] = '+';
+                if(map_door[floor][character_row][character_column] == 2)
+                    map[floor][character_row][character_column] = '#';
+
+                character_column = character_column + 1;
+                if(map[floor][character_row - 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row - 1][character_column] = 1;
+                }
+                if(map[floor][character_row + 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row + 1][character_column] = 1;
+                }
+                if(map[floor][character_row][character_column -1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column - 1] = 1;
+                }
+                if(map[floor][character_row][character_column + 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column + 1] = 1;
+                }
+            }
+            refresh();
+        }
+
+        else if(c == 'k'){
+             
+            if(map[floor][character_row + 1][character_column] == '|' || map[floor][character_row + 1][character_column] == 'D' || map[floor][character_row + 1][character_column] == 'F' || map[floor][character_row + 1][character_column] == 'G' || map[floor][character_row + 1][character_column] == 'S' || map[floor][character_row + 1][character_column] == 'U' || map[floor][character_row + 1][character_column] == 'O' || map[floor][character_row + 1][character_column] == ' '){
+                attron(COLOR_PAIR(5));
+                move(1, 1);
+                clrtoeol();
+                printw("INVALID ORDER !");
+                refresh();
+                napms(850);
+                attroff(COLOR_PAIR(5));
+                refresh();
+                continue;
+            }
+            else{
+                 
+                map[floor][character_row][character_column] = '.';
+                map[floor][character_row + 1][character_column] = '$';
+
+                if(map[floor][character_row + 1][character_column] == '+')
+                    map_door[floor][character_row + 1][character_column] = 1;
+                if(map[floor][character_row + 1][character_column] == '#')
+                    map_door[floor][character_row + 1][character_column] = 2;
+
+                if(map_door[floor][character_row][character_column] == 1)
+                    map[floor][character_row][character_column] = '+';
+                if(map_door[floor][character_row][character_column] == 2)
+                    map[floor][character_row][character_column] = '#';
+
+                character_row = character_row + 1;
+                if(map[floor][character_row - 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row - 1][character_column] = 1;
+                }
+                if(map[floor][character_row + 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row + 1][character_column] = 1;
+                }
+                if(map[floor][character_row][character_column -1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column - 1] = 1;
+                }
+                if(map[floor][character_row][character_column + 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column + 1] = 1;
+                }
+            }
+            refresh();
+        }
+
+        else if(c == 'j'){
+             
+            if(map[floor][character_row - 1][character_column] == '*' || map[floor][character_row - 1][character_column] == 'D' || map[floor][character_row - 1][character_column] == 'F' || map[floor][character_row - 1][character_column] == 'G' || map[floor][character_row - 1][character_column] == 'S' || map[floor][character_row - 1][character_column] == 'U' || map[floor][character_row - 1][character_column] == 'O' || map[floor][character_row - 1][character_column] == ' '){
+                attron(COLOR_PAIR(5));
+                move(1, 1);
+                clrtoeol();
+                printw("INVALID ORDER !");
+                refresh();
+                napms(850);
+                attroff(COLOR_PAIR(5));
+                refresh();
+                continue;
+            }
+            
+            else{
+                 
+                map[floor][character_row][character_column] = '.';
+                map[floor][character_row - 1][character_column] = '$';
+
+                if(map[floor][character_row - 1][character_column] == '+')
+                    map_door[floor][character_row - 1][character_column] = 1;
+                if(map[floor][character_row - 1][character_column] == '#')
+                    map_door[floor][character_row - 1][character_column] = 2;
+
+                if(map_door[floor][character_row][character_column] == 1)
+                    map[floor][character_row][character_column] = '+';
+                if(map_door[floor][character_row][character_column] == 2)
+                    map[floor][character_row][character_column] = '#';
+
+                character_row = character_row - 1;
+                if(map[floor][character_row - 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row - 1][character_column] = 1;
+                }
+                if(map[floor][character_row + 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row + 1][character_column] = 1;
+                }
+                if(map[floor][character_row][character_column -1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column - 1] = 1;
+                }
+                if(map[floor][character_row][character_column + 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column + 1] = 1;
+                }
+                print_map();
+            }
+            refresh();
+        }
+
+        else if(c == 'y'){
+             
+            if(map[floor][character_row - 1][character_column - 1] == '|' || map[floor][character_row - 1][character_column - 1] == '*' || map[floor][character_row - 1][character_column - 1] == 'D' || map[floor][character_row - 1][character_column - 1] == 'F' || map[floor][character_row - 1][character_column - 1] == 'G' || map[floor][character_row - 1][character_column - 1] == 'S' || map[floor][character_row - 1][character_column - 1] == 'U' || map[floor][character_row - 1][character_column - 1] == 'O' || map[floor][character_row - 1][character_column - 1] == ' '){
+                attron(COLOR_PAIR(5));
+                move(1, 1);
+                clrtoeol();
+                printw("INVALID ORDER !");
+                refresh();
+                napms(850);
+                attroff(COLOR_PAIR(5));
+                refresh();
+                continue;
+            }
+            
+            else{
+                 
+                map[floor][character_row][character_column] = '.';
+                map[floor][character_row - 1][character_column - 1] = '$';
+
+                if(map[floor][character_row - 1][character_column - 1] == '+')
+                    map_door[floor][character_row - 1][character_column - 1] = 1;
+                if(map[floor][character_row - 1][character_column - 1] == '#')
+                    map_door[floor][character_row - 1][character_column - 1] = 2;
+
+                if(map_door[floor][character_row - 1][character_column - 1] == 1)
+                    map[floor][character_row - 1][character_column - 1] = '+';
+                if(map_door[floor][character_row - 1][character_column - 1] == 2)
+                    map[floor][character_row - 1][character_column - 1] = '#';
+
+                character_row = character_row - 1;
+                character_column = character_column - 1;
+
+                if(map[floor][character_row - 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row - 1][character_column] = 1;
+                }
+                if(map[floor][character_row + 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row + 1][character_column] = 1;
+                }
+                if(map[floor][character_row][character_column - 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column - 1] = 1;
+                }
+                if(map[floor][character_row][character_column + 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column + 1] = 1;
+                }
+                print_map();
+            }
+            refresh();
+        }
+
+        else if(c == 'n'){
+             
+            if(map[floor][character_row + 1][character_column + 1] == '|' || map[floor][character_row + 1][character_column + 1] == '*' || map[floor][character_row + 1][character_column + 1] == 'D' || map[floor][character_row + 1][character_column + 1] == 'F' || map[floor][character_row + 1][character_column + 1] == 'G' || map[floor][character_row + 1][character_column + 1] == 'S' || map[floor][character_row + 1][character_column + 1] == 'U' || map[floor][character_row + 1][character_column + 1] == 'O' || map[floor][character_row + 1][character_column + 1] == ' '){
+                attron(COLOR_PAIR(5));
+                move(1, 1);
+                clrtoeol();
+                printw("INVALID ORDER !");
+                refresh();
+                napms(850);
+                attroff(COLOR_PAIR(5));
+                refresh();
+                continue;
+            }
+            
+            else{
+                 
+                map[floor][character_row][character_column] = '.';
+                map[floor][character_row + 1][character_column + 1] = '$';
+
+                if(map[floor][character_row + 1][character_column + 1] == '+')
+                    map_door[floor][character_row + 1][character_column + 1] = 1;
+                if(map[floor][character_row + 1][character_column + 1] == '#')
+                    map_door[floor][character_row + 1][character_column + 1] = 2;
+
+                if(map_door[floor][character_row + 1][character_column + 1] == 1)
+                    map[floor][character_row + 1][character_column + 1] = '+';
+                if(map_door[floor][character_row + 1][character_column + 1] == 2)
+                    map[floor][character_row + 1][character_column + 1] = '#';
+
+                character_row = character_row + 1;
+                character_column = character_column + 1;
+
+                if(map[floor][character_row - 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row - 1][character_column] = 1;
+                }
+                if(map[floor][character_row + 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row + 1][character_column] = 1;
+                }
+                if(map[floor][character_row][character_column - 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column - 1] = 1;
+                }
+                if(map[floor][character_row][character_column + 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column + 1] = 1;
+                }
+                print_map();
+                refresh();
+            }
+            refresh();
+        }
+
+        else if(c == 'u'){
+             
+            if(map[floor][character_row - 1][character_column + 1] == '|' || map[floor][character_row - 1][character_column + 1] == '*' || map[floor][character_row - 1][character_column + 1] == 'D' || map[floor][character_row - 1][character_column + 1] == 'F' || map[floor][character_row - 1][character_column + 1] == 'G' || map[floor][character_row - 1][character_column + 1] == 'S' || map[floor][character_row - 1][character_column + 1] == 'U' || map[floor][character_row - 1][character_column + 1] == 'O' || map[floor][character_row - 1][character_column + 1] == ' '){
+                attron(COLOR_PAIR(5));
+                move(1, 1);
+                clrtoeol();
+                printw("INVALID ORDER !");
+                refresh();
+                napms(850);
+                attroff(COLOR_PAIR(5));
+                refresh();
+                continue;
+            }
+            
+            else{
+                 
+                map[floor][character_row][character_column] = '.';
+                map[floor][character_row - 1][character_column + 1] = '$';
+
+                if(map[floor][character_row - 1][character_column + 1] == '+')
+                    map_door[floor][character_row - 1][character_column + 1] = 1;
+                if(map[floor][character_row - 1][character_column + 1] == '#')
+                    map_door[floor][character_row - 1][character_column + 1] = 2;
+
+                if(map_door[floor][character_row - 1][character_column + 1] == 1)
+                    map[floor][character_row - 1][character_column + 1] = '+';
+                if(map_door[floor][character_row - 1][character_column + 1] == 2)
+                    map[floor][character_row - 1][character_column + 1] = '#';
+
+                character_row = character_row - 1;
+                character_column = character_column + 1;
+
+                if(map[floor][character_row - 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row - 1][character_column] = 1;
+                }
+                if(map[floor][character_row + 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row + 1][character_column] = 1;
+                }
+                if(map[floor][character_row][character_column - 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column - 1] = 1;
+                }
+                if(map[floor][character_row][character_column + 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column + 1] = 1;
+                }
+                print_map();
+            }
+            refresh();
+        }
+
+        else if(c == 'b'){
+             
+            if(map[floor][character_row + 1][character_column - 1] == '|' || map[floor][character_row + 1][character_column - 1] == '*' || map[floor][character_row + 1][character_column - 1] == 'D' || map[floor][character_row + 1][character_column - 1] == 'F' || map[floor][character_row + 1][character_column - 1] == 'G' || map[floor][character_row + 1][character_column - 1] == 'S' || map[floor][character_row + 1][character_column - 1] == 'U' || map[floor][character_row + 1][character_column - 1] == 'O' || map[floor][character_row + 1][character_column - 1] == ' '){
+                attron(COLOR_PAIR(5));
+                move(1, 1);
+                clrtoeol();
+                printw("INVALID ORDER !");
+                refresh();
+                napms(850);
+                attroff(COLOR_PAIR(5));
+                refresh();
+                continue;
+            }
+            
+            else{
+                 
+                map[floor][character_row][character_column] = '.';
+                map[floor][character_row + 1][character_column - 1] = '$';
+
+                if(map[floor][character_row + 1][character_column - 1] == '+')
+                    map_door[floor][character_row + 1][character_column - 1] = 1;
+                if(map[floor][character_row + 1][character_column - 1] == '#')
+                    map_door[floor][character_row + 1][character_column - 1] = 2;
+
+                if(map_door[floor][character_row + 1][character_column - 1] == 1)
+                    map[floor][character_row + 1][character_column - 1] = '+';
+                if(map_door[floor][character_row + 1][character_column - 1] == 2)
+                    map[floor][character_row + 1][character_column - 1] = '#';
+
+                character_row = character_row + 1;
+                character_column = character_column - 1;
+
+                if(map[floor][character_row - 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row - 1][character_column] = 1;
+                }
+                if(map[floor][character_row + 1][character_column] == '#'){
+                    flag_corridor_map[floor][character_row + 1][character_column] = 1;
+                }
+                if(map[floor][character_row][character_column -1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column - 1] = 1;
+                }
+                if(map[floor][character_row][character_column + 1] == '#'){
+                    flag_corridor_map[floor][character_row][character_column + 1] = 1;
+                }
+                print_map();
+            }
+            refresh();
+        }
+    }
+}
+
 void color() {
     start_color();
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
@@ -1707,6 +3183,7 @@ void color() {
     init_pair(3, COLOR_GREEN, COLOR_BLACK);
     init_pair(4, COLOR_RED, COLOR_BLACK);
     init_pair(5, COLOR_BLUE, COLOR_BLACK);
+    init_pair(6, COLOR_YELLOW, COLOR_BLACK);
 }
 //24 80
 
@@ -1720,15 +3197,70 @@ int main(){
     int select = menu_start();
     if(select == 0)
         sign_up();
-    // if(select == 1)
+    // else if(select == 1)
     //     login();
-    // if(select == 2)
+    // else
     //     guest();
-    // x();
-    
-    
+    select = pre_game();
+    if(select == 0 || select == 1)
+        game();
+    else if(select == 2)
+        score();
+    else if(select == 3)
+        profile();
+    else 
+        settings();
+    move_map();
 
+    
+    
 
     endwin();
     return 0;
+}
+
+
+else if(map[floor][character_row - 1][character_column] == '<'){
+
+    map[floor][character_row - 1][character_column] = '.';
+    map[floor][character_row][character_column] = '?';
+
+    while(1){   
+        int x = getch();
+        
+        if(x == '>'){
+            map[floor][character_row - 1][character_column] = '<';
+            map[floor][character_row][character_column] = '.';
+            floor++;
+            move_map();
+            //next floor
+            break;
+        }
+        
+        else if(x == '<') {
+            map[floor][character_row - 1][character_column] = '<';
+            map[floor][character_row][character_column] = '.';
+            floor--;
+            move_map();
+            //previous floor
+            break;
+        }
+
+        else if(x == 'i'){
+            //show weapon
+        }
+
+        else if(c == 'M'){
+            for(int i = 0; i < 24; i++){
+                for(int j = 0; j < 80; j++){
+                    printw("%c", map[floor][i][j]);
+                }
+            }
+        }
+
+        else{
+            map[floor][character_row - 1][character_column] = '<';
+            map[floor][character_row][character_column] = '$';
+        }
+    }
 }

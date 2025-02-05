@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 
+
 struct room{
     int row;
     int column;
@@ -19,6 +20,8 @@ struct room{
 
 void map(){
     
+    curs_set(0);
+    refresh();
     char map[24][80];
 
     for(int j = 0; j < 24; j++){
@@ -48,11 +51,11 @@ void map(){
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row][j] = '*';
+                map[a[i].row][j] = '-';
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row + a[i].width - 1][j] = '*';
+                map[a[i].row + a[i].width - 1][j] = '-';
             } 
 
             door = rand() % (a[i].lenght - 2) + a[i].column + 1;
@@ -86,11 +89,11 @@ void map(){
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row][j] = '*';
+                map[a[i].row][j] = '-';
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row + a[i].width - 1][j] = '*';
+                map[a[i].row + a[i].width - 1][j] = '-';
             } 
 
             door = rand() % (a[i].lenght - 2) + a[i].column + 1;
@@ -129,11 +132,11 @@ void map(){
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row][j] = '*';
+                map[a[i].row][j] = '-';
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row + a[i].width - 1][j] = '*';
+                map[a[i].row + a[i].width - 1][j] = '-';
             } 
 
             door = rand() % (a[i].lenght - 2) + a[i].column + 1;
@@ -172,11 +175,11 @@ void map(){
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row][j] = '*';
+                map[a[i].row][j] = '-';
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row + a[i].width - 1][j] = '*';
+                map[a[i].row + a[i].width - 1][j] = '-';
             } 
 
             door = rand() % (a[i].lenght - 2) + a[i].column + 1;
@@ -210,11 +213,11 @@ void map(){
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row][j] = '*';
+                map[a[i].row][j] = '-';
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row + a[i].width - 1][j] = '*';
+                map[a[i].row + a[i].width - 1][j] = '-';
             } 
 
             door = rand() % (a[i].lenght - 2) + a[i].column + 1;
@@ -248,11 +251,11 @@ void map(){
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row][j] = '*';
+                map[a[i].row][j] = '-';
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row + a[i].width - 1][j] = '*';
+                map[a[i].row + a[i].width - 1][j] = '-';
             } 
 
             door = rand() % (a[i].lenght - 2) + a[i].column + 1;
@@ -291,11 +294,11 @@ void map(){
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row][j] = '*';
+                map[a[i].row][j] = '-';
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row + a[i].width - 1][j] = '*';
+                map[a[i].row + a[i].width - 1][j] = '-';
             } 
 
             door = rand() % (a[i].lenght - 2) + a[i].column + 1;
@@ -334,11 +337,11 @@ void map(){
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row][j] = '*';
+                map[a[i].row][j] = '-';
             }
 
             for(int j = a[i].column; j < a[i].column + a[i].lenght; j++){
-                map[a[i].row + a[i].width - 1][j] = '*';
+                map[a[i].row + a[i].width - 1][j] = '-';
             } 
 
             door = rand() % (a[i].lenght - 2) + a[i].column + 1;
@@ -456,6 +459,8 @@ void map(){
 
 
 
+
+    
     for(int j = 0; j < 1; j++){
         if(a[0].door_right_row == a[1].door_left_row){
             for(int i = a[0].door_right_column + 1; i < a[1].door_left_column; i++){
@@ -470,13 +475,13 @@ void map(){
             for(int i = ((a[0].door_right_column + a[1].door_left_column) / 2); i < a[1].door_left_column; i++)
                 map[a[1].door_left_row][i] = '#';
         }
-        else{
+        else if(a[0].door_right_row > a[1].door_left_row){
             for(int i = a[0].door_right_column + 1; i <= ((a[0].door_right_column + a[1].door_left_column) / 2); i++)
-                map[a[1].door_left_row][i] = '#';
+                map[a[0].door_right_row][i] = '#';
             for(int i = a[1].door_left_row; i <= a[0].door_right_row; i++)
                 map[i][((a[0].door_right_column + a[1].door_left_column) / 2)] = '#';
             for(int i = ((a[0].door_right_column + a[1].door_left_column) / 2); i < a[1].door_left_column; i++)
-                map[a[0].door_left_row][i] = '#';
+                map[a[1].door_left_row][i] = '#';
         }
     }
 
@@ -496,11 +501,11 @@ void map(){
         }
         else{
             for(int i = a[1].door_right_column + 1; i <= ((a[1].door_right_column + a[2].door_left_column) / 2); i++)
-                map[a[2].door_left_row][i] = '#';
+                map[a[1].door_right_row][i] = '#';
             for(int i = a[2].door_left_row; i <= a[1].door_right_row; i++)
                 map[i][((a[1].door_right_column + a[2].door_left_column) / 2)] = '#';
             for(int i = ((a[1].door_right_column + a[2].door_left_column) / 2); i < a[2].door_left_column; i++)
-                map[a[1].door_left_row][i] = '#';
+                map[a[2].door_left_row][i] = '#';
         }
     }
 
@@ -520,11 +525,11 @@ void map(){
         }
         else{
             for(int i = a[2].door_right_column + 1; i <= ((a[2].door_right_column + a[3].door_left_column) / 2); i++)
-                map[a[3].door_left_row][i] = '#';
+                map[a[2].door_right_row][i] = '#';
             for(int i = a[3].door_left_row; i <= a[2].door_right_row; i++)
                 map[i][((a[2].door_right_column + a[3].door_left_column) / 2)] = '#';
             for(int i = ((a[2].door_right_column + a[3].door_left_column) / 2); i < a[3].door_left_column; i++)
-                map[a[2].door_left_row][i] = '#';
+                map[a[3].door_left_row][i] = '#';
         }
     }
 
@@ -544,11 +549,11 @@ void map(){
         }
         else{
             for(int i = a[4].door_right_column + 1; i <= ((a[4].door_right_column + a[5].door_left_column) / 2); i++)
-                map[a[5].door_left_row][i] = '#';
+                map[a[4].door_right_row][i] = '#';
             for(int i = a[5].door_left_row; i <= a[4].door_right_row; i++)
                 map[i][((a[4].door_right_column + a[5].door_left_column) / 2)] = '#';
             for(int i = ((a[4].door_right_column + a[5].door_left_column) / 2); i < a[5].door_left_column; i++)
-                map[a[4].door_left_row][i] = '#';
+                map[a[5].door_left_row][i] = '#';
         }
     }
 
@@ -568,11 +573,11 @@ void map(){
         }
         else{
             for(int i = a[5].door_right_column + 1; i <= ((a[5].door_right_column + a[6].door_left_column) / 2); i++)
-                map[a[6].door_left_row][i] = '#';
+                map[a[5].door_right_row][i] = '#';
             for(int i = a[6].door_left_row; i <= a[5].door_right_row; i++)
                 map[i][((a[5].door_right_column + a[6].door_left_column) / 2)] = '#';
             for(int i = ((a[5].door_right_column + a[6].door_left_column) / 2); i < a[6].door_left_column; i++)
-                map[a[5].door_left_row][i] = '#';
+                map[a[6].door_left_row][i] = '#';
         }
     }
 
@@ -592,14 +597,16 @@ void map(){
         }
         else{
             for(int i = a[6].door_right_column + 1; i <= ((a[6].door_right_column + a[7].door_left_column) / 2); i++)
-                map[a[7].door_left_row][i] = '#';
+                map[a[6].door_right_row][i] = '#';
             for(int i = a[7].door_left_row; i <= a[6].door_right_row; i++)
                 map[i][((a[6].door_right_column + a[7].door_left_column) / 2)] = '#';
             for(int i = ((a[6].door_right_column + a[7].door_left_column) / 2); i < a[7].door_left_column; i++)
-                map[a[6].door_left_row][i] = '#';
+                map[a[7].door_left_row][i] = '#';
         }
     }
     
+    map[a[0].row + 2][a[0].column + 2] = '$';
+
     refresh();
     for(int j = 0; j < 24; j++){
         for(int i = 0; i < 80; i++){
@@ -608,7 +615,10 @@ void map(){
         }
     }
     refresh();
-    getch();
+}
+
+move_map(){
+
 }
 
 int main(){
@@ -617,5 +627,7 @@ int main(){
     clear();
     noecho();
     map();
+    
+    refresh();
 
 }
